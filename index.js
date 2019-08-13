@@ -1,12 +1,16 @@
-const Koa = require('koa');
-const Router = require('@koa/router');
+const Koa = require('koa'); 
+const Router = require('@koa/router'); // routes
+const send = require('koa-send'); // file serving
+
 const app = new Koa();
 const router = new Router();
 const port = 3000;
 
 //requires
 const query = require('./src/db') //db connection
-const bodyParser = require('koa-bodyparser');
+
+//const bodyParser = require('koa-bodyparser'); 
+//app.use(bodyParser())
 
 //logging / app use
 app.use(async (ctx, next) => {
@@ -22,10 +26,16 @@ app.use(async (ctx, next) => {
     ctx.set('X-Response-Time', `${ms}ms`);
 });
 
-app.use(bodyParser())
 
+
+
+router.get('/file', async (ctx, next) => {
+    await send(ctx, './testfile.file');
+});
+
+//sql routes
 router.get('/', async (ctx, next) => {
-    ctx.body = await query("SELECT * FROM messages"); 
+    ctx.body = await query("SELECT * FROM messages");
 });
 
 router.post('/:message', async (ctx, next) => {
